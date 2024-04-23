@@ -12,19 +12,22 @@ class Serializer:
 
     def run(self):
         self.extract_data()
-        for year, value in self.data.items():
+        
+        for year, value in self.data.items():            
             helper = 0
             if year != "Art":
-                sum = value.sum()
+                sum = value.sum()                
                 for zahl in value:
                     self.data[year][helper] = round((zahl/sum)*100, 2)
                     helper += 1
-        self.data['Anteil (Mittelwert)'] = self.data.iloc[:, 1:].mean(axis=1)
+        
+        self.data['Average in %'] = self.data.iloc[:, 1:].mean(axis=1).round(2)
         self.txt_table(self.data, "result.txt")
 
     def txt_table(self, data, filename):
         df = pd.DataFrame(data)
-        with open(filename, 'w') as file:
+        df.iloc[:, 1:] = df.iloc[:, 1:].apply(lambda x: x.astype(str) + '%')
+        with open(filename, 'w', encoding="utf8") as file:
             file.write(df.to_string())
 
 
